@@ -91,11 +91,11 @@
     <h1>Bangalore House Price Predictor</h1>
 
     <form action="{{ url_for('predict') }}" method="post">
-      <input type="number" name="total_sqft" placeholder="Total Square Feet" required>
-      <input type="number" name="bath" placeholder="Number of Bathrooms" required>
-      <input type="number" name="bhk" placeholder="Number of BHK" required>
+      <input type="number" name="total_sqft" placeholder="Total Square Feet" required value="{{ request.form.total_sqft }}">
+      <input type="number" name="bath" placeholder="Number of Bathrooms" required value="{{ request.form.bath }}">
+      <input type="number" name="bhk" placeholder="Number of BHK" required value="{{ request.form.bhk }}">
 
-      <input list="locations" name="location" placeholder="Select Location" required>
+      <input list="locations" name="location" placeholder="Select Location" required value="{{ request.form.location }}">
       <datalist id="locations">
         {% for loc in locations %}
           <option value="{{ loc }}">
@@ -104,6 +104,7 @@
 
       <button type="submit">Predict Price</button>
     </form>
+
 
     {% if prediction_text %}
     <div class="result">

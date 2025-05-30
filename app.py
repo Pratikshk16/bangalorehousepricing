@@ -21,12 +21,28 @@ def home():
 @app.route('/predict_api', methods=['POST'])
 def predict_api():
     data = request.json['data']
-    print(data)
-    print(np.array(list(data.values())).reshape(1, -1))
-    new_data = scalar.transform(np.array(list(data.values())).reshape(1, -1))
-    output = regmodel.predict(new_data)
-    print(output[0])
-    return jsonify(output[0])
+    
+    # Ensure input order matches data_columns
+    with open("bhp_columns.json") as f:
+        data_columns = json.load(f)['data_columns']
+
+    input_data = [0] * len(data_columns)
+    
+    # Fill in numeric values
+    input_data[0] = data['total_sqft']
+    input_data[1] = data['bath']
+    input_data[2] = data['bhk']
+
+    # Fill in location one-hot encoding
+    for loc in data:
+        if loc in data_columns:
+            idx = data_columns.index(loc)
+            input_data[idx] = data[loc]
+
+    prediction = regmodel.predict([input_data])[0]
+    return jsonify(prediction)
+
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
